@@ -12,11 +12,12 @@ const { Server } = require("socket.io");
 const { readFileSync } = require("fs");
 
 // create global variables
+const HTTP_PORT = 3000;
+const SOCKET_PORT = 3001;
 const app = express();
-const io = new Server(3001, {
+const io = new Server(SOCKET_PORT, {
     path: "/"
 });
-const PORT = 3000;
 
 io.on("connection", async(socket) => {
     //console.log(`${socket.id} has connected`);
@@ -30,7 +31,7 @@ io.on("connection", async(socket) => {
     });
 });
 
-app.listen(PORT, function() {
+app.listen(HTTP_PORT, function() {
     console.log(`Listening at http://localhost:${PORT}`);
 });
 
