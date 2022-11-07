@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Book</title>
+        <script src="/public/js/jquery.js"></script>
+        <script src="/public/js/socketio.js"></script>
+
+        <script defer>
+            $(document).ready(function() {
+                const socket = io(":3001", {
+                    transports: ["websocket"],
+                    path: "/"
+                });
+                socket.on("get-book", async(data) => {
+                    console.log(data);
+                });
+                socket.emit("request-book", );
+            });
+        </script>
+    </head>
+    <body>
+
+    </body>
+</html>

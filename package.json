@@ -1,0 +1,12 @@
+{
+    "name": "cmp302_assignment2",
+    "main": "index.js",
+    "scripts": {
+        "start": "node .",
+        "prestart": "npm i"
+    },
+    "dependencies": {
+        "express": "^4.18.2",
+        "socket.io": "^4.5.3"
+    }
+}
