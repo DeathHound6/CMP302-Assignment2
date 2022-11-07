@@ -11,10 +11,10 @@
                     transports: ["websocket"],
                     path: "/"
                 });
-                socket.on("get-book", async(data) => {
-                    console.log(data);
+                socket.on("get-book", async(book) => {
+                    
                 });
-                socket.emit("request-book", );
+                socket.emit("request-book");
             });
         </script>
     </head>
