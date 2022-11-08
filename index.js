@@ -44,6 +44,6 @@ app.get("/", async(req, res) => {
 app.get("/book", async(req, res) => {
     res.sendFile(`${__dirname}/html/book.html`);
 });
-app.get("/books", async(req, res) => {
-    res.sendFile(`${__dirname}/html/books.html`);
+app.get("/catalogue", async(req, res) => {
+    res.sendFile(`${__dirname}/html/catalogue.html`);
 });
