@@ -1,0 +1,23 @@
+.dark {
+    background-color: #222;
+    color: #e6e6e6;
+}
+
+.theme-switch-wrapper {
+    display: flex;
+    align-items: center;
+    float: right;
+}
+
+.theme-switch {
+    display: inline-block;
+    height: 34px;
+    position: relative;
+    width: 60px;
+    text-align: right;
+}
+
+.theme-switch input {
+    display: none;
+}
+
