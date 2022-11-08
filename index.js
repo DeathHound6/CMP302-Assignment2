@@ -32,7 +32,7 @@ io.on("connection", async(socket) => {
 });
 
 app.listen(HTTP_PORT, function() {
-    console.log(`Listening at http://localhost:${PORT}`);
+    console.log(`Listening at http://localhost:${HTTP_PORT}`);
 });
 
 app.use("/public", express.static(`${__dirname}/public`));
