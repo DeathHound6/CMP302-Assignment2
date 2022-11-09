@@ -1,23 +1,22 @@
+body {
+    padding: 2% 3% 10% 3%;
+    text-align: center;
+    max-width: 100%;
+}
 .dark {
     background-color: #222;
     color: #e6e6e6;
 }
-
-.theme-switch-wrapper {
-    display: flex;
-    align-items: center;
-    float: right;
+.fa-solid {
+    font-size: 30px;
 }
-
-.theme-switch {
-    display: inline-block;
-    height: 34px;
-    position: relative;
-    width: 60px;
-    text-align: right;
+#theme-switch {
+    width: fit-content;
+    margin-left: 95%;
+    background-color: transparent;
+    border: 0;
 }
-
-.theme-switch input {
-    display: none;
+#theme-switch:hover {
+    cursor: pointer;
+    border: 2px;
 }
-

@@ -2,16 +2,32 @@
 <html>
     <head>
         <title>Library</title>
+        <link href="/public/css/globals.css" rel="stylesheet">
         <script src="/public/js/jquery.js"></script>
+        <script src="https://kit.fontawesome.com/a6ac61292a.js" crossorigin="anonymous"></script>
+        <script defer>
+            $(document).ready(function(){
+                $('#theme-switch').click(function(){
+                    $(document.body).toggleClass("dark");
+                    $("i").toggleClass("fa-sun");
+                    $("i").toggleClass("fa-moon");
+                });
+                // $("#theme-switch").hover(
+                //     function(ev) {
+                //         ev.preventDefault();
+                //         $("i").animate({
+                //             "transform": "rotate(180deg)"
+                //         }, 2500);
+                //     }
+                // );
+            });
+        </script>
     </head>
     <body>
-        <h1>Test</h1>
-        <p>Test 2</p>
-        <div class = "theme-switch-wrapper">
-            <label class = "theme-switch" for = "checkbox">
-                <input type = "checkbox" id = "checkbox">
-                <div class = "slider-round"></div>
-            </label>
+        <div id="nav-bar" role="navigation">
+            <button id="theme-switch">
+                <i class="fa-solid fa-sun" style="color:orange;"></i>
+            </button>
         </div>
     </body>
 </html>
