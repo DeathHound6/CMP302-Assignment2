@@ -3,60 +3,70 @@
         "name": "1",
         "author": "author",
         "cost": 4,
-        "url": "https://example.com"
+        "url": "https://example.com",
+        "image": "https://dictionary.cambridge.org/images/thumb/book_noun_001_01679.jpg?version=5.0.274"
     },
     {
         "name": "2",
         "author": "author",
         "cost": 4,
-        "url": "https://example.com"
+        "url": "https://example.com",
+        "image": "https://dictionary.cambridge.org/images/thumb/book_noun_001_01679.jpg?version=5.0.274"
     },
     {
         "name": "3",
         "author": "author",
         "cost": 4,
-        "url": "https://example.com"
+        "url": "https://example.com",
+        "image": "https://dictionary.cambridge.org/images/thumb/book_noun_001_01679.jpg?version=5.0.274"
     },
     {
         "name": "4",
         "author": "author",
         "cost": 4,
-        "url": "https://example.com"
+        "url": "https://example.com",
+        "image": "https://dictionary.cambridge.org/images/thumb/book_noun_001_01679.jpg?version=5.0.274"
     },
     {
         "name": "5",
         "author": "author",
         "cost": 4,
-        "url": "https://example.com"
+        "url": "https://example.com",
+        "image": "https://dictionary.cambridge.org/images/thumb/book_noun_001_01679.jpg?version=5.0.274"
     },
     {
         "name": "6",
         "author": "author",
         "cost": 4,
-        "url": "https://example.com"
+        "url": "https://example.com",
+        "image": "https://dictionary.cambridge.org/images/thumb/book_noun_001_01679.jpg?version=5.0.274"
     },
     {
         "name": "7",
         "author": "author",
         "cost": 4,
-        "url": "https://example.com"
+        "url": "https://example.com",
+        "image": "https://dictionary.cambridge.org/images/thumb/book_noun_001_01679.jpg?version=5.0.274"
     },
     {
         "name": "8",
         "author": "author",
         "cost": 4,
-        "url": "https://example.com"
+        "url": "https://example.com",
+        "image": "https://dictionary.cambridge.org/images/thumb/book_noun_001_01679.jpg?version=5.0.274"
     },
     {
         "name": "9",
         "author": "author",
         "cost": 4,
-        "url": "https://example.com"
+        "url": "https://example.com",
+        "image": "https://dictionary.cambridge.org/images/thumb/book_noun_001_01679.jpg?version=5.0.274"
     },
     {
         "name": "10",
         "author": "author",
         "cost": 4,
-        "url": "https://example.com"
+        "url": "https://example.com",
+        "image": "https://dictionary.cambridge.org/images/thumb/book_noun_001_01679.jpg?version=5.0.274"
     }
 ]
