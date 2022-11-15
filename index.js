@@ -80,8 +80,8 @@ app.get("/checkout", async(req, res) => {
     res.status(200).sendFile(`${__dirname}/html/checkout.html`);
 });
 app.post("/checkout", async(req, res) => {
-    const books = JSON.parse((await axios.get("http://localhost:3000/catalogue", { headers: { "content-type": "application/json" }}))?.data)?.books;
-    for (const book of books)
-        (await axios.delete("http://localhost:3000/cart", { data: { name: book.name }}));
+    const cart = JSON.parse((await axios.get("http://localhost:3000/cart", { headers: { "content-type": "application/json" }}))?.data)?.cart;
+    for (const bookName of cart)
+        (await axios.delete("http://localhost:3000/cart", { data: { name: bookName }}));
     res.status(200).send();
 });
