@@ -5,6 +5,7 @@
  * @property {String} author
  * @property {Number} cost
  * @property {String} url
+ * @property {String} image
  */
 
 // module imports
@@ -67,13 +68,11 @@ app.post("/cart", async(req, res) => {
 });
 app.delete("/cart", async(req, res) => {
     const bookName = req.body.name;
-    const books = JSON.parse((await axios.get("http://localhost:3000/catalogue", { headers: { "content-type": "application/json" }}))?.data)?.books;
-    if (!books?.length)
-        return res.status(400).send();
-    const bookIndex = books.find(e => e.name == decodeURIComponent(bookName));
-    if (bookIndex == -1)
+    const cartObj = JSON.parse((await axios.get("http://localhost:3000/cart", { headers: { "content-type": "application/json" }}))?.data)?.cart;
+    const cartIndex = cartObj.findIndex(e => e == bookName);
+    if (cartIndex == -1)
         return res.status(404).send();
-    cart.splice(bookIndex, 1);
+    cart.splice(cartIndex, 1);
     res.status(200).send();
 });
 app.get("/checkout", async(req, res) => {
