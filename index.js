@@ -15,7 +15,7 @@ const { readFileSync } = require("fs");
 // create global variables
 const HTTP_PORT = 3000;
 const app = express();
-const cart = [];
+const cart = ["1", "5", "6"]; // REMOVE TESTING VALUES BEFORE SUBMITTING
 
 app.listen(HTTP_PORT, function() {
     console.log(`Listening at http://localhost:${HTTP_PORT}`);
@@ -74,5 +74,14 @@ app.delete("/cart", async(req, res) => {
     if (bookIndex == -1)
         return res.status(404).send();
     cart.splice(bookIndex, 1);
+    res.status(200).send();
+});
+app.get("/checkout", async(req, res) => {
+    res.status(200).sendFile(`${__dirname}/html/checkout.html`);
+});
+app.post("/checkout", async(req, res) => {
+    const books = JSON.parse((await axios.get("http://localhost:3000/catalogue", { headers: { "content-type": "application/json" }}))?.data)?.books;
+    for (const book of books)
+        (await axios.delete("http://localhost:3000/cart", { data: { name: book.name }}));
     res.status(200).send();
 });
