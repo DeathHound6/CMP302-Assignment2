@@ -15,6 +15,7 @@ const { readFileSync } = require("fs");
 // create global variables
 const HTTP_PORT = 3000;
 const app = express();
+const cart = [];
 
 app.listen(HTTP_PORT, function() {
     console.log(`Listening at http://localhost:${HTTP_PORT}`);
@@ -50,4 +51,28 @@ app.get("/catalogue/:name", async(req, res) => {
         return res.status(200).json({ book });
     }
     res.status(200).sendFile(`${__dirname}/html/book.html`);
+});
+app.get("/cart", async(req, res) => {
+    if (req.headers["content-type"] == "application/json")
+        return res.status(200).json({ cart });
+    res.status(200).sendFile(`${__dirname}/html/cart.html`);
+});
+app.post("/cart", async(req, res) => {
+    const bookName = req.body.name;
+    const book = JSON.parse((await axios.get(`http://localhost:3000/catalogue/${bookName}`, { headers: { "content-type": "application/json" }}))?.data)?.book;
+    if (!book)
+        return res.status(404).send();
+    cart.push(book.name);
+    res.status(200).send();
+});
+app.delete("/cart", async(req, res) => {
+    const bookName = req.body.name;
+    const books = JSON.parse((await axios.get("http://localhost:3000/catalogue", { headers: { "content-type": "application/json" }}))?.data)?.books;
+    if (!books?.length)
+        return res.status(400).send();
+    const bookIndex = books.find(e => e.name == decodeURIComponent(bookName));
+    if (bookIndex == -1)
+        return res.status(404).send();
+    cart.splice(bookIndex, 1);
+    res.status(200).send();
 });
