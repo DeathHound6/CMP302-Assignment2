@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Cart</title>
+        <link href="/public/css/globals.css" rel="stylesheet">
+        <style>
+            #loading {
+                text-align: center;
+            }
+            .book {
+                margin-left: 35%;
+                margin-right: 35%;
+                width: auto;
+                max-height: 5%;
+                border-radius: 5px;
+                border-color: black;
+                border-width: 1px;
+                border-style: solid;
+                display: flexbox;
+            }
+            .book-info {
+                margin-left: auto;
+                margin-right: auto;
+                width: auto;
+                height: auto;
+                cursor: pointer;
+            }
+            .remove-book {
+                text-decoration: none;
+                color: black;
+            }
+        </style>
+        <script src="/public/js/jquery.js"></script>
+        <script defer>
+            $(document).ready(function() {
+                // load the cart contents as soon as the page loads
+                $.ajax({
+                    url: "http://localhost:3000/cart",
+                    dataType: "json",
+                    method: "GET",
+                    headers: {
+                        "content-type": "application/json"
+                    },
+                    error: function(req, status, err) {
+                        $("#loading").text("There was an error viewing your cart");
+                    },
+                    success: function(cart, status, req) {
+                        if (cart.cart.length > 0) {
+                            for (const bookName of cart.cart.reverse()) {
+                                $.ajax({
+                                    url: `http://localhost:3000/catalogue/${bookName}`,
+                                    dataType: "json",
+                                    method: "GET",
+                                    headers: {
+                                        "content-type": "application/json"
+                                    },
+                                    error: function(req, status, err) {
+                                        console.error(err);
+                                        $("#container").prepend(
+                                            "<div class='book'>" +
+                                                "<p>There was an error fetching this book</p>" +
+                                            "</div>"
+                                        );
+                                    },
+                                    success: function(book, status, req) {
+                                        // when the first book has been returned, hide the loading message
+                                        if (cart.cart.findIndex(e => e == bookName) == 0)
+                                            $("#loading").hide();
+                                        // create a new div for this book
+                                        $("#container").prepend(
+                                            `<div class='book book-${book.book.name}'>` +
+                                                "<div class='book-info'>" +
+                                                    `<p>${book.book.name}</p>` +
+                                                    `<img src='${book.book.image}' alt='${book.book.name}'>` +
+                                                "</div>" +
+                                                "<a class='remove-book' href='javascript:void(0);'>Remove from Cart</a>" +
+                                                "<br /> <br />" +
+                                            "</div>" +
+                                            "<br />"
+                                        );
+
+                                        $(`.book-${book.book.name} .book-info`).click(function() {
+                                            window.location.assign(`/catalogue/${book.book.name}`);
+                                        });
+
+                                        $(`.book-${book.book.name} a`).click(function(ev) {
+                                            ev.preventDefault();
+                                            // confirm with user in case of accidental click
+                                            if (confirm(`Are you sure you want to remove ${book.book.name} from the cart?`))
+                                                $.ajax({
+                                                    url: "http://localhost:3000/cart",
+                                                    headers: {
+                                                        "content-type": "application/json"
+                                                    },
+                                                    data: JSON.stringify({
+                                                        name: book.book.name
+                                                    }),
+                                                    method: "DELETE",
+                                                    error: function(req, status, err) {
+                                                        alert("There was an error removing this item from the cart");
+                                                        console.error(err);
+                                                    },
+                                                    success: function() {
+                                                        alert("The item has been removed from the cart");
+                                                        window.location.reload();
+                                                    }
+                                                });
+                                        });
+                                    }
+                                });
+                            }
+                            return;
+                        }
+                        $("#loading").html(
+                            "There are no books in your cart.<br />Please add some from our <a href='/catalogue'>catalogue</a>"
+                        );
+                        $("#checkout").attr("disabled", true);
+                    }
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <!-- NAV BAR HEADER -->
+
+        <div id="container">
+            <h2 id="loading">Loading...</h2>
+            <br/>
+            <a href="/checkout" class="button" style="display:inline-block;">Checkout</a>
+        </div>
+
+        <!-- FOOTER -->
+    </body>
+</html>
