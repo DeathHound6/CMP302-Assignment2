@@ -29,38 +29,33 @@ app.get("/", async(req, res) => {
     res.status(200).sendFile(`${__dirname}/html/index.html`);
 });
 app.get("/catalogue", async(req, res) => {
-     if (req.headers["content-type"] == "application/json") {
-        /**
-         * @type {Array<Book>}
-         */
-        const books = JSON.parse(readFileSync(`${__dirname}/books.json`).toString());
-        return res.status(200).json({ books });
-    }
     res.status(200).sendFile(`${__dirname}/html/catalogue.html`);
 });
+app.get("/catalogue/json", async(req, res) => {
+    const books = JSON.parse(readFileSync(`${__dirname}/books.json`).toString());
+    res.status(200).json({ books });
+});
 app.get("/catalogue/:name", async(req, res) => {
-    if (req.headers["content-type"] == "application/json") {
-        /**
-         * @type {Array<Book>|null}
-         */
-        const books = JSON.parse((await axios.get("http://localhost:3000/catalogue", { headers: { "content-type": "application/json" }}))?.data)?.books;
-        if (!books?.length)
-            return res.status(400).send();
-        const book = books.find(e => e.name == decodeURIComponent(req.params.name));
-        if (!book)
-            return res.status(404).send();
-        return res.status(200).json({ book });
-    }
     res.status(200).sendFile(`${__dirname}/html/book.html`);
 });
+app.get("/catalogue/:name/json", async(req, res) => {
+    const books = JSON.parse((await axios.get("http://localhost:3000/catalogue/json", { headers: { "content-type": "application/json" }}))?.data)?.books;
+    if (!books?.length)
+        return res.status(400).send();
+    const book = books.find(e => e.name == decodeURIComponent(req.params.name));
+    if (!book)
+        return res.status(404).send();
+    res.status(200).json({ book });
+});
 app.get("/cart", async(req, res) => {
-    if (req.headers["content-type"] == "application/json")
-        return res.status(200).json({ cart });
     res.status(200).sendFile(`${__dirname}/html/cart.html`);
+});
+app.get("/cart/json", async(req, res) => {
+    res.status(200).json({ cart });
 });
 app.post("/cart", async(req, res) => {
     const bookName = req.body.name;
-    const book = JSON.parse((await axios.get(`http://localhost:3000/catalogue/${bookName}`, { headers: { "content-type": "application/json" }}))?.data)?.book;
+    const book = JSON.parse((await axios.get(`http://localhost:3000/catalogue/${bookName}/json`, { headers: { "content-type": "application/json" }}))?.data)?.book;
     if (!book)
         return res.status(404).send();
     cart.push(book.name);
@@ -68,7 +63,7 @@ app.post("/cart", async(req, res) => {
 });
 app.delete("/cart", async(req, res) => {
     const bookName = req.body.name;
-    const cartObj = JSON.parse((await axios.get("http://localhost:3000/cart", { headers: { "content-type": "application/json" }}))?.data)?.cart;
+    const cartObj = JSON.parse((await axios.get("http://localhost:3000/cart/json", { headers: { "content-type": "application/json" }}))?.data)?.cart;
     const cartIndex = cartObj.findIndex(e => e == bookName);
     if (cartIndex == -1)
         return res.status(404).send();
@@ -79,7 +74,7 @@ app.get("/checkout", async(req, res) => {
     res.status(200).sendFile(`${__dirname}/html/checkout.html`);
 });
 app.post("/checkout", async(req, res) => {
-    const cart = JSON.parse((await axios.get("http://localhost:3000/cart", { headers: { "content-type": "application/json" }}))?.data)?.cart;
+    const cart = JSON.parse((await axios.get("http://localhost:3000/cart/json", { headers: { "content-type": "application/json" }}))?.data)?.cart;
     for (const bookName of cart)
         (await axios.delete("http://localhost:3000/cart", { data: { name: bookName }}));
     res.status(200).send();
