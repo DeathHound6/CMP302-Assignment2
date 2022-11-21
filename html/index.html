@@ -3,15 +3,17 @@
     <head>
         <title>Library</title>
         <link href="/public/css/globals.css" rel="stylesheet">
+        <link href="/public/css/jquery-ui.min.css" rel="stylesheet">
         <script src="/public/js/jquery.js"></script>
+        <script src="/public/js/jquery-ui.min.js"></script>
         <script src="https://kit.fontawesome.com/a6ac61292a.js" crossorigin="anonymous"></script>
         <script defer>
-            $(document).ready(function(){
-                $('#theme-switch').click(function(){
-                    $(document.body).toggleClass("dark");
-                    $("i").toggleClass("fa-sun");
-                    $("i").toggleClass("fa-moon");
-                });
+            $(document).ready(function() {
+                // $('#theme-switch').click(function(){
+                //     $(document.body).toggleClass("dark");
+                //     $(".theme-switch").toggleClass("fa-sun").toggleClass("fa-moon");
+                //     $(".fa-cart-shopping").toggleClass("cart-icon-light").toggleClass("cart-icon-dark");
+                // });
                 // $("#theme-switch").hover(
                 //     function(ev) {
                 //         ev.preventDefault();
@@ -24,10 +26,42 @@
         </script>
     </head>
     <body>
-        <div id="nav-bar" role="navigation">
-            <button id="theme-switch">
-                <i class="fa-solid fa-sun" style="color:orange;"></i>
-            </button>
+        <div id="nav-bar-container">
+            <div id="nav-bar" role="navigation">
+                <div title="Homepage" class="nav-bar-button-container">
+                    <button class="nav-bar-button">
+                        <a href="http://localhost:3000"><i class="fa-solid fa-house"></i></a>
+                    </button>
+                    <p>Homepage</p>
+                </div>
+                <div title="Catalogue" class="nav-bar-button-container">
+                    <button class="nav-bar-button">
+                        <a href="http://localhost:3000/catalogue"><i class="fa-solid fa-book-open"></i></a>
+                    </button>
+                    <p>Catalogue</p>
+                </div>
+                <div style="width:100%;"></div>
+                <div title="Cart" class="nav-bar-button-container">
+                    <!--<button id="theme-switch" class="nav-bar-button">
+                        <i class="fa-solid fa-sun theme-switch" style="color:orange;"></i>
+                    </button>-->
+                    <button class="nav-bar-button">
+                        <a href="http://localhost:3000/cart"><i class="fa-solid fa-cart-shopping cart-icon"></i></a>
+                    </button>
+                    <p>Cart</p>
+                </div>
+            </div>
+            <br/><br/>
         </div>
+
+        <main>
+            <br/><br/>
+            <div>
+                <br/><br/>
+                <!-- MAIN CONTENT -->
+                <br/><br/>
+            </div>
+            <br/><br/>
+        </main>
     </body>
 </html>

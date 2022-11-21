@@ -1,33 +1,61 @@
 body {
-    padding: 2% 3% 10% 3%;
     text-align: center;
     max-width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 2%;
 }
-.dark {
+main {
+    background-image: url("/public/media/images/library-background-image.jpeg");
+    margin-left: 0;
+    margin-right: 0;
+    width: 100%;
+    min-height: 100%;
+}
+main > div {
+    border: 0.5px solid grey;
+    border-radius: 10px;
+    margin-left: 15%;
+    margin-right: 15%;
+    background-color: white;
+}
+/*.dark {
     background-color: #222;
     color: #e6e6e6;
+}*/
+#nav-bar {
+    display: inline-flex;
+    text-align: center;
+    width: 100%;
+    background-color: white;
 }
-.fa-solid {
-    font-size: 30px;
+#nav-bar-container {
+    text-align: left;
+    margin-left: 2%;
+    margin-right: 2%;
+    max-width: 100%;
 }
-#theme-switch {
+.nav-bar-button {
     width: fit-content;
-    margin-left: 95%;
     background-color: transparent;
     border: 0;
 }
-#theme-switch:hover {
+.nav-bar-button-container {
+    margin-left: 2%;
+    margin-right: 2%;
+}
+.nav-bar-button-container > p {
+    font-weight: bold;
+    margin: 0;
+}
+.nav-bar:last-child {
+    margin-left: 100%;
+}
+.nav-bar-button > a > i {
+    color: black;
+    font-size: xx-large;
+}
+/*#theme-switch:hover {
     cursor: pointer;
     border: 2px;
-}
-
-.button {
-    text-decoration: none;
-    color: black;
-    width: 10%;
-    height: 10%;
-    text-align: center;
-    border: 1px solid #000;
-    border-radius: 5px;
-    background-color: lightgrey;
-}
+}*/
