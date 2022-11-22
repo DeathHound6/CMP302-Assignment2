@@ -1,12 +1,11 @@
 body {
     text-align: center;
     max-width: 100%;
-    margin-left: 0;
-    margin-right: 0;
-    margin-top: 2%;
+    margin: 0;
 }
 main {
     background-image: url("/public/media/images/library-background-image.jpeg");
+    background-size: cover;
     margin-left: 0;
     margin-right: 0;
     width: 100%;
@@ -33,6 +32,7 @@ main > div {
     text-align: left;
     margin-left: 2%;
     margin-right: 2%;
+    margin-top: 1%;
     max-width: 100%;
 }
 .nav-bar-button {
@@ -47,9 +47,6 @@ main > div {
 .nav-bar-button-container > p {
     font-weight: bold;
     margin: 0;
-}
-.nav-bar:last-child {
-    margin-left: 100%;
 }
 .nav-bar-button > a > i {
     color: black;
