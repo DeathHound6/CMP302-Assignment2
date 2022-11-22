@@ -17,6 +17,7 @@ const { readFileSync } = require("fs");
 const HTTP_PORT = 3000;
 const app = express();
 const cart = ["1", "5", "6"]; // REMOVE TESTING VALUES BEFORE SUBMITTING
+const reserved = [];
 
 app.listen(HTTP_PORT, function() {
     console.log(`Listening at http://localhost:${HTTP_PORT}`);
@@ -77,5 +78,17 @@ app.post("/checkout", async(req, res) => {
     const cart = JSON.parse((await axios.get("http://localhost:3000/cart/json", { headers: { "content-type": "application/json" }}))?.data)?.cart;
     for (const bookName of cart)
         (await axios.delete("http://localhost:3000/cart", { data: { name: bookName }}));
+    res.status(200).send();
+});
+app.get("/reserved", async(req, res) => {
+    res.status(200).sendFile(`${__dirname}/html/reserved.html`);
+});
+app.get("/reserved/json", async(req, res) => {
+    res.status(200).json({ reserved });
+});
+app.post("/reserved", async(req, res) => {
+    for (const name of cart)
+        reserved.push(name);
+    cart.splice(0, cart.length);
     res.status(200).send();
 });
