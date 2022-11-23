@@ -1,4 +1,401 @@
 <!DOCTYPE html>
 <html>
-    
+    <head>
+        <title>Checkout</title>
+        <link href="/public/css/globals.css" rel="stylesheet">
+        <link href="/public/css/jquery-ui.min.css" rel="stylesheet">
+        <script src="/public/js/jquery.js"></script>
+        <script src="/public/js/jquery-ui.min.js"></script>
+        <script src="https://kit.fontawesome.com/a6ac61292a.js" crossorigin="anonymous"></script>
+        <style>
+            label {
+                font-size: larger;
+            }
+            legend {
+                font-weight: bold;
+                font-size: x-large;
+                text-decoration: underline 1px solid grey;
+                width: 100%;
+                text-align: center;
+            }
+            fieldset > input, div > input {
+                text-align: center;
+                font-size: x-large;
+                border-radius: 10px;
+            }
+            fieldset {
+                border: 0;
+            }
+            img.card-type {
+                height: auto;
+                filter: grayscale(90%);
+                border: 0.5px solid grey;
+                border-radius: 10px;
+            }
+            .visa {
+                width: 9%;
+                padding: 1%;
+            }
+            .mastercard {
+                width: 10%;
+            }
+            .american-express {
+                width: 10%;
+            }
+        </style>
+        <script defer>
+            // define global variables
+            let cost = 0.00;
+            let discountedCost = 0.00;
+            let totalCost = 0.00;
+            const emailRegex = "^[a-zA-Z0-9\.\-]{2,}\@[a-zA-Z0-9\-]{2,}(\.[a-zA-Z]{2,})+$";
+            const coupons = ["book", "library", "coupon"];
+
+            $(document).ready(function() {
+                // get total cart cost
+                $.ajax({
+                    url: "http://localhost:3000/cart/json",
+                    method: "GET",
+                    headers: {
+                        "content-type": "application/json"
+                    },
+                    success: function(data) {
+                        for (const bookName of data.cart) {
+                            $.ajax({
+                                url: `http://localhost:3000/catalogue/${bookName}/json`,
+                                method: "GET",
+                                headers: {
+                                    "content-type": "application/json"
+                                },
+                                success: function(data) {
+                                    cost += data.book.cost;
+                                    totalCost = cost;
+                                    $("#cost").text(`Cost: £${Number(totalCost).toFixed(2)}`);
+                                }
+                            });
+                        }
+                    }
+                });
+
+                $(".payment-info").hide();
+
+                // back to cart tooltip
+                // this is defined separately as we do not want it displayed when invalid info is entered
+                $("a[title]").tooltip({
+                    position: {
+                        my: "left top",
+                        at: "right+5 top-5",
+                        collision: "none"
+                    }
+                });
+                // all tooltips except coupon (coupon is optional)
+                const tooltips = $("input[title]:not('#coupon'),[for='paypal']").tooltip({
+                    position: {
+                        my: "left top",
+                        at: "right+5 top-5",
+                        collision: "none"
+                    }
+                });
+                // coupon tooltip
+                const couponTooltip = $("#coupon[title]").tooltip({
+                    position: {
+                        my: "left top",
+                        at: "right+5 top-5",
+                        collision: "none"
+                    }
+                });
+
+                // submit coupon
+                $("#apply-coupon").click(function() {
+                    if (!coupons.includes(($("#coupon").val().toLowerCase()))) {
+                        $("#coupon")[0].title = "Invalid Coupon Code";
+                        couponTooltip.tooltip("open");
+                        return $("#coupon").css("border-color", "red");
+                    }
+                    coupons.splice(coupons.findIndex(e => e == $("#coupon").val().toLowerCase()), 1);
+                    $("#coupon").css("border-color", "black");
+                    couponTooltip.tooltip("close");
+                    discountedCost += cost / 10;
+                    cost = totalCost - discountedCost;
+                    $("#coupon").val("");
+                    $("#discount").text(`Discount: £${Number(discountedCost).toFixed(2)}`);
+                    $("#cost").text(`Cost: £${Number(cost).toFixed(2)}`);
+                }).button();
+
+                // SUBMIT CLICK
+                $("#submit").click(function() {
+                    let errors = 0;
+                    $("input,label").css("border-color", "black").css("color", "black").each((index, element) => $(element)[0].title = "");
+
+                    //#region Personal Details
+                    // forename
+                    if ($("#forename").val().trim().length < 2) {
+                        $("#forename").css("border-color", "red");
+                        $("#forename")[0].title = "Forename must be at least 2 characters long";
+                        errors++;
+                    }
+                    // surname
+                    if ($("#surname").val().trim().length < 2) {
+                        $("#surname").css("border-color", "red");
+                        $("#surname")[0].title = "Surname must be at least 2 characters long";
+                        errors++;
+                    }
+                    // email
+                    if (!$("#email").val().trim().length) {
+                        $("#email").css("border-color", "red");
+                        $("#email")[0].title = "Please provide an email address";
+                        errors++;
+                    } else if (!new RegExp(emailRegex).test(($("#email").val().trim()))) {
+                        $("#email").css("border-color", "red");
+                        $("#email")[0].title = "Enter a valid email address";
+                        errors++;
+                    }
+                    // phone num
+                    if (!$("#phone").val().trim().length) {
+                        $("#phone").css("border-color", "red");
+                        $("#phone")[0].title = "Please provide a phone number";
+                        errors++;
+                    } else if (!new RegExp("^(0|[+][^a-zA-Z]{2})( )?([^a-zA-Z]{10})$").test($("#phone").val().trim())) {
+                        $("#phone").css("border-color", "red");
+                        $("#phone")[0].title = "Enter a valid phone number";
+                        errors++;
+                    }
+                    //#endregion
+
+                    //#region Address
+                    if ($("#house-street").val().trim().length < 3) {
+                        $("#house-street").css("border-color", "red");
+                        $("#house-street")[0].title = "House street name must be at least 3 characters";
+                        errors++;
+                    }
+                    if (!$("#house-num").val().trim().length) {
+                        $("#house-num").css("border-color", "red");
+                        $("#house-num")[0].title = "Please enter a house number";
+                        errors++;
+                    }
+                    if ($("#house-city").val().trim().length < 3) {
+                        $("#house-city").css("border-color", "red");
+                        $("#house-city")[0].title = "House city must be at least 3 characters";
+                        errors++;
+                    }
+                    if (!new RegExp("^BT[0-9]+( )?[0-9][A-Za-z]{2}$").test($("#house-postcode").val().trim())) {
+                        $("#house-postcode").css("border-color", "red");
+                        $("#house-postcode")[0].title = "House postcode must be a valid postcode";
+                        errors++;
+                    }
+                    //#endregion
+                    
+                    //#region Billing Details
+                    if ($("#paypal").prop("checked")) {
+                        if (!$("#paypal-email").val().trim().length) {
+                            $("#paypal-email").css("border-color", "red");
+                            $("#paypal-email")[0].title = "Please provide a email address";
+                            errors++;
+                        } else if (!new RegExp(emailRegex).test(($("#paypal-email").val().trim()))) {
+                            $("#paypal-email").css("border-color", "red");
+                            $("#paypal-email")[0].title = "Please enter a valid email address";
+                            errors++;
+                        }
+                    } else if ($("#card").prop("checked")) {
+                        if ($("#card-number").val().trim().length != 16) {
+                            $("#card-number").css("border-color", "red");
+                            $("#card-number")[0].title = "Credit Card number must be 16 characters long";
+                            errors++;
+                        } else if (["4","34","37","51","52","53","54","55"].findIndex(e => $("#card-number").val().trim().startsWith(e)) == -1) {
+                            $("#card-number").css("border-color", "red");
+                            $("#card-number")[0].title = "Please enter a valid card number";
+                            errors++;
+                        }
+
+                        if ($("#card-cvc").val().trim().length != 3) {
+                            $("#card-cvc").css("border-color", "red");
+                            $("#card-cvc")[0].title = "Credit Card CVC must be 3 digits";
+                            errors++;
+                        }
+
+                        if ($("#card-name").val().trim().length < 2) {
+                            $("#card-name").css("border-color", "red");
+                            $("#card-name")[0].title = "Cardholder name must be at least 2 characters";
+                            errors++;
+                        }
+
+                        const expiry = new Date(
+                            ...$("#card-expiry").val().trim().split("/").reverse().map((e, i) => {
+                                let v = parseInt(e);
+                                // month - Date takes month as zero-based (therefore need to remove 1)
+                                if (i == 1)
+                                    v--;
+                                return v;
+                            }),
+                            0, 0, 0
+                        );
+                        const now = new Date(new Date().getFullYear(), new Date().getMonth()-1, new Date().getDate(), 0, 0, 0);
+                        if (expiry.toLocaleDateString() != $("#card-expiry").val().trim()) {
+                            $("#card-expiry").css("border-color", "red");
+                            $("#card-expiry")[0].title = "Provide a card expiry date in the 'dd/mm/yyyy' format";
+                            errors++;
+                        } else if (isNaN(expiry)) {
+                            $("#card-expiry").css("border-color", "red");
+                            $("#card-expiry")[0].title = "Provide a valid card expiry date";
+                            errors++;
+                        } else if (expiry.getTime() < now.getTime()) {
+                            $("#card-expiry").css("border-color", "red");
+                            $("#card-expiry")[0].title = "The provided card expiry date has passed";
+                            errors++;
+                        }
+                    } else {
+                        $("label[for='paypal'],label[for='card']").css("color", "red");
+                        $("label[for='paypal']")[0].title = "Please select a payment method";
+                        errors++;
+                    }
+                    //#endregion
+                    
+                    // submit
+                    // open the tooltip titles - displays error messages
+                    if (errors > 0)
+                        return tooltips.tooltip("open");
+                    
+                    $.ajax({
+                        url: "http://localhost:3000/reserved",
+                        method: "POST",
+                        headers: {
+                            "content-type": "application/json"
+                        },
+                        success: function() {
+                            window.location.assign("http://localhost:3000/reserved");
+                        }
+                    });
+                }).button();
+
+                // switching payment methods
+                $("input[type='radio']").change(function() {
+                    $("[for='paypal']").tooltip("close");
+                    $("[for='paypal']")[0].title = "";
+                    $("[for='paypal'],[for='card']").css("color", "black");
+                    const id = $(this)[0].id;
+                    $(".payment-info").each((index, element) => {
+                        if ($(element).hasClass(id))
+                            $(element).show();
+                        else
+                            $(element).hide();
+                    });
+                });
+
+                // card number - 16 chars
+                $("#card-number").keydown(function(ev) {
+                    if ($(this).val().length >= 16 && ev.keyCode != 8)
+                        return false;
+                    const allowed = [8,27,46,48,49,50,51,52,53,54,55,56,57,96,97,98,99,100,101,102,103,104,105];
+                    // allow numbers (and Numpad), backspace, delete keys etc
+                    return allowed.includes(ev.keyCode);
+                });
+                // card cvc - 3 chars
+                $("#card-cvc").keydown(function(ev) {
+                    if ($(this).val().length >= 3 && ev.keyCode != 8)
+                        return false;
+                    const allowed = [8,27,46,48,49,50,51,52,53,54,55,56,57,96,97,98,99,100,101,102,103,104,105];
+                    // allow numbers (and Numpad), backspace, delete keys etc
+                    return allowed.includes(ev.keyCode);
+                });
+
+                // setting card type - image display
+                $("#card-number").keyup(function() {
+                    $(".card-type").css("filter", "grayscale(90%)");
+                    const value = $(this).val();
+                    if (!value)
+                        return;
+                    if (value.startsWith("4"))
+                        $(".visa").css("filter", "none");
+                    else if (["51","52","53","54","55"].includes(value.substring(0, 2)))
+                        $(".mastercard").css("filter", "none");
+                    else if (["34", "37"].includes(value.substring(0, 2)))
+                        $(".american-express").css("filter", "none");
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <!-- NAV BAR HEADER -->
+
+        <main>
+            <br/><br/>
+            <div>
+                <div style="display:inline-flex;width:100%;">
+                    <a href="http://localhost:3000/cart" title="Back to Cart" style="text-align:left;margin-top:2%;margin-left:2%;"><i class="fa-solid fa-cart-shopping cart-icon"></i></a>
+                    <h2 style="text-decoration:underline;margin-left:40%;margin-right:auto;">Checkout</h2>
+                </div>
+                <form>
+                    <fieldset>
+                        <legend>Personal Details</legend>
+                        <br/>
+                        <input type="text" id="forename" placeholder="Forename" title="">
+                        <br/><br/>
+                        <input type="text" id="surname" placeholder="Surname" title="">
+                        <br/><br/>
+                        <input type="text" id="email" placeholder="Email Address" title="">
+                        <br/><br/>
+                        <input type="text" id="phone" placeholder="Phone Number" title="">
+                    </fieldset>
+                    <br/><br/>
+                    <fieldset>
+                        <legend>Billing Address</legend>
+                        <br/>
+                        <input type="text" id="house-street" placeholder="Street Name" title="">
+                        <br/><br/>
+                        <input type="text" id="house-num" placeholder="House Number" title="">
+                        <br/><br/>
+                        <input type="text" id="house-city" placeholder="City" title="">
+                        <br/><br/>
+                        <input type="text" id="house-postcode" placeholder="Postcode" title="">
+                    </fieldset>
+                    <br/><br/>
+                    <fieldset>
+                        <legend>Payment Information</legend>
+                        <input type="radio" id="card" name="payment"><label for="card">Credit Card</label>
+                        <input type="radio" id="paypal" name="payment"><label for="paypal" title="">Paypal</label>
+                        <br/><br/>
+                        <div class="payment-info card">
+                            <img src="/public/media/images/mastercard.png" class="card-type mastercard">
+                            <img src="/public/media/images/visa.png" class="card-type visa">
+                            <img src="/public/media/images/american-express.png" class="card-type american-express">
+                            <br/><br/>
+                            <input type="text" id="card-number" placeholder="Card Number" title="">
+                            <br/><br/>
+                            <input type="text" id="card-cvc" placeholder="Card CVC" title="">
+                            <br/><br/>
+                            <input type="text" id="card-name" placeholder="Cardholder Name" title="">
+                            <br/><br/>
+                            <input type="text" id="card-expiry" placeholder="Card Expiry Date" title="">
+                            <br/><br/>
+                        </div>
+                        <div class="payment-info paypal">
+                            <input type="text" id="paypal-email" placeholder="Paypal Email Address" title="">
+                            <br/><br/>
+                        </div>
+                    </fieldset>
+                    <fieldset>
+                        <legend>Optional Information</legend>
+                        <textarea id="instructions" spellcheck="true" placeholder="Delivery Instructions (Optional)" style="width:25%;resize:none;border-radius:10px;font-size:larger;" rows="4"></textarea>
+                        <br/><br/>
+                        <fieldset>
+                            <legend>Marketing Offers</legend>
+                            <input type="checkbox" id="marketing-sms"><label for="marketing-sms">SMS</label>
+                            <input type="checkbox" id="marketing-email"><label for="marketing-email">Email</label>
+                            <input type="checkbox" id="marketing-post"><label for="marketing-post">Post</label>
+                        </fieldset>
+                    </fieldset>
+                    <br/>
+                    <fieldset>
+                        <input type="text" id="coupon" placeholder="Apply Coupon Code" title="">
+                        <br/>
+                        <button type="button" id="apply-coupon">Apply</button>
+                    </fieldset>
+                    <p id="discount">Discount: £0.00</p>
+                    <p id="cost">Cost: £0.00</p>
+                    <p id="submit" title="Purchase">Purchase</p>
+                </form>
+            </div>
+            <br/><br/>
+        </main>
+    </body>
 </html>
