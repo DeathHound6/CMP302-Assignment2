@@ -1,72 +1,37 @@
 [
     {
-        "name": "1",
-        "author": "author",
+        "name": "JQuery UI",
+        "author": "Eric Sarrion",
         "cost": 4,
-        "url": "https://example.com",
-        "image": "https://dictionary.cambridge.org/images/thumb/book_noun_001_01679.jpg?version=5.0.274"
+        "url": "https://www.google.co.uk/books/edition/JQuery_UI/Hwd7DKKdzAUC?hl=en&gbpv=1",
+        "image": "/public/media/images/books/jquery-ui.jpeg"
     },
     {
-        "name": "2",
-        "author": "author",
+        "name": "JavaScript and JQuery",
+        "author": "Jon Duckett",
         "cost": 4,
-        "url": "https://example.com",
-        "image": "https://dictionary.cambridge.org/images/thumb/book_noun_001_01679.jpg?version=5.0.274"
+        "url": "https://www.google.co.uk/books/edition/JavaScript_and_jQuery/_uTRAwAAQBAJ?hl=en&gbpv=1",
+        "image": "/public/media/images/books/js-jquery.jpeg"
     },
     {
-        "name": "3",
-        "author": "author",
+        "name": "Beginning JavaScript",
+        "author": "Jeremy McPeak",
         "cost": 4,
-        "url": "https://example.com",
-        "image": "https://dictionary.cambridge.org/images/thumb/book_noun_001_01679.jpg?version=5.0.274"
+        "url": "https://www.google.co.uk/books/edition/Beginning_JavaScript/bzekBgAAQBAJ?hl=en&gbpv=1",
+        "image": "/public/media/images/books/js.jpeg"
     },
     {
-        "name": "4",
-        "author": "author",
+        "name": "Regex Quick Syntax Reference",
+        "author": "Zsolt Nagy",
         "cost": 4,
-        "url": "https://example.com",
-        "image": "https://dictionary.cambridge.org/images/thumb/book_noun_001_01679.jpg?version=5.0.274"
+        "url": "https://www.google.co.uk/books/edition/Regex_Quick_Syntax_Reference/jiBqDwAAQBAJ?hl=en&gbpv=1",
+        "image": "/public/media/images/books/regex.jpeg"
     },
     {
-        "name": "5",
-        "author": "author",
+        "name": "Beginning HTML and CSS",
+        "author": "Rob Larsen",
         "cost": 4,
-        "url": "https://example.com",
-        "image": "https://dictionary.cambridge.org/images/thumb/book_noun_001_01679.jpg?version=5.0.274"
-    },
-    {
-        "name": "6",
-        "author": "author",
-        "cost": 4,
-        "url": "https://example.com",
-        "image": "https://dictionary.cambridge.org/images/thumb/book_noun_001_01679.jpg?version=5.0.274"
-    },
-    {
-        "name": "7",
-        "author": "author",
-        "cost": 4,
-        "url": "https://example.com",
-        "image": "https://dictionary.cambridge.org/images/thumb/book_noun_001_01679.jpg?version=5.0.274"
-    },
-    {
-        "name": "8",
-        "author": "author",
-        "cost": 4,
-        "url": "https://example.com",
-        "image": "https://dictionary.cambridge.org/images/thumb/book_noun_001_01679.jpg?version=5.0.274"
-    },
-    {
-        "name": "9",
-        "author": "author",
-        "cost": 4,
-        "url": "https://example.com",
-        "image": "https://dictionary.cambridge.org/images/thumb/book_noun_001_01679.jpg?version=5.0.274"
-    },
-    {
-        "name": "10",
-        "author": "author",
-        "cost": 4,
-        "url": "https://example.com",
-        "image": "https://dictionary.cambridge.org/images/thumb/book_noun_001_01679.jpg?version=5.0.274"
+        "url": "https://www.google.co.uk/books/edition/Beginning_HTML_and_CSS/QwnWLMtXU7cC?hl=en&gbpv=1",
+        "image": "/public/media/images/books/html-css.jpeg"
     }
 ]
