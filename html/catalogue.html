@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Catalogue</title>
+        <link href="/public/css/globals.css" rel="stylesheet">
+        <link href="/public/css/jquery-ui.min.css" rel="stylesheet">
+        <style>
+            .book {
+                margin-right: 5%;
+                margin-left: 5%;
+                border-radius: 10px;
+                border: 1px solid black;
+                cursor: pointer;
+                display: inline-flex;
+                width: 50%;
+            }
+            .book > div {
+                width: 50%;
+            }
+            .book-image {
+                width: 80%;
+                padding-left: 2%;
+                padding-right: 2%;
+            }
+            .book-title {
+                font-size: xx-large;
+                text-decoration: underline;
+            }
+            .book-author {
+                font-size: larger;
+            }
+            .book-cost {
+                font-size: x-large;
+            }
+        </style>
+        <script src="/public/js/jquery.js"></script>
+        <script src="/public/js/jquery-ui.min.js"></script>
+        <script src="https://kit.fontawesome.com/a6ac61292a.js" crossorigin="anonymous"></script>
+        <script defer>
+            $(document).ready(function() {
+                $("#search-button").click(function() {
+                    const input = $("#search").val();
+                    if (!input)
+                        return $(".book").show();
+                    $("#books-list").children(`.book`).each((index, element) => {
+                        if (!element.id.toLowerCase().replace("book-", "").replace(/_+/g, " ").includes(input.toLowerCase()))
+                            return $(element).hide();
+                        $(element).show();
+                    });
+                });
+                $("#search").keypress(function(ev) {
+                    // key code 13 is enter
+                    if (ev.keyCode == 13) {
+                        //ev.preventDefault();
+                        $("#search-button").click();
+                        // $("#books-list").children(`.book`).each((index, element) => {
+                        //     if (!element.id.toLowerCase().replace("book-", "").includes(input))
+                        //         $(element).hide();
+                        // });
+                    }
+                });
+                $(".book").click(function() {
+                    window.location.assign(`/catalogue/${$(this)[0].id.replace("book-", "")}`);
+                });
+                $.ajax({
+                    url: "http://localhost:3000/catalogue/json",
+                    method: "GET",
+                    headers: {
+                        "content-type": "application/json"
+                    },
+                    success: function(data, status, req) {
+                        for (const book of data.books) {
+                            $("#books-list").prepend(
+                                `<div class="book" id="book-${book.name.replace(/ +/g, "_")}">` +
+                                    "<br/>" +
+                                    "<div>" +
+                                        "<br/>" +
+                                        `<img src='${book.image}' class='book-image'>` +
+                                        "<br/>" +
+                                    "</div>" +
+                                    "<div>" +
+                                        "<p>" +
+                                            `<span class='book-title'>${book.name}</span>` +
+                                            "<br/>" +
+                                            `<span class="book-author">${book.author}</span>` +
+                                        "</p> " +
+                                        `<p class="book-cost">£${Number(book.cost).toFixed(2)}</p>` +
+                                    "</div>" +
+                                    "<br/>" +
+                                "</div>" +
+                                "<br/><br/>"
+                            );
+                        }
+                        $("#search").autocomplete({
+                            source: data.books.map(e => e.name)
+                        });
+                        $("#loading").hide();
+                    }
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <div id="nav-bar-container">
+            <div id="nav-bar" role="navigation">
+                <div title="Homepage" class="nav-bar-button-container">
+                    <button class="nav-bar-button">
+                        <a href="http://localhost:3000"><i class="fa-solid fa-house"></i></a>
+                    </button>
+                    <p>Homepage</p>
+                </div>
+                <div title="Catalogue" class="nav-bar-button-container">
+                    <button class="nav-bar-button">
+                        <a href="http://localhost:3000/catalogue"><i class="fa-solid fa-book-open"></i></a>
+                    </button>
+                    <p>Catalogue</p>
+                </div>
+                <div style="width:100%;">
+                    <h3 style="font-size:x-large;margin-top:1%;">Library</h3>
+                </div>
+                <div title="Cart" class="nav-bar-button-container">
+                    <!--<button id="theme-switch" class="nav-bar-button">
+                        <i class="fa-solid fa-sun theme-switch" style="color:orange;"></i>
+                    </button>-->
+                    <button class="nav-bar-button">
+                        <a href="http://localhost:3000/cart"><i class="fa-solid fa-cart-shopping cart-icon"></i></a>
+                    </button>
+                    <p>Cart</p>
+                </div>
+                <div title="Reserved Books" class="nav-bar-button-container">
+                    <button class="nav-bar-button">
+                        <a href="http://localhost:3000/reserved"><i class="fa-solid fa-bookmark"></i></a>
+                    </button>
+                    <p>Reserved Books</p>
+                </div>
+            </div>
+            <br/><br/>
+        </div>
+
+        <main>
+            <br/><br/>
+            <div>
+                <br/>
+                <input id="search" placeholder="Search" style="height:30px;font-size:larger;text-align:center;width:20%;" title="">
+                <i class="fa-solid fa-magnifying-glass" id="search-button" style="margin-left:5px;cursor:pointer;font-size:x-large;"></i>
+                <br/><br/>
+                <h2 style="text-decoration:underline;">Catalogue</h2>
+                <br/>
+                <div style="margin-right:15%;margin-left:15%;" id="books-list">
+                    <!-- designing layout below -->
+                    <!--<div class="book" id="book-JQuery_UI">
+                        <br/>
+                        <div>
+                            <br/>
+                            <img src="/public/media/images/books/jquery-ui.jpeg" class="book-image">
+                            <br/>
+                        </div>
+                        <div>
+                            <p>
+                                <span class="book-title">JQuery UI</span>
+                                <br/>
+                                <span class="book-author">Eric Sarrion</span>
+                            </p>
+                            <p class="book-cost">£4.00</p>
+                        </div>
+                        <br/>
+                    </div>-->
+                    <h2 id="loading">Loading...</h2>
+                </div>
+                <br/>
+            </div>
+            <br/>
+            <br/>
+        </main>
+    </body>
+</html>

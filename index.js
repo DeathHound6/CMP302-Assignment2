@@ -16,7 +16,7 @@ const { readFileSync } = require("fs");
 // create global variables
 const HTTP_PORT = 3000;
 const app = express();
-const cart = ["1", "5", "6"]; // REMOVE TESTING VALUES BEFORE SUBMITTING
+const cart = ["JQuery UI", "Regex Quick Syntax Reference", "Beginning HTML and CSS"]; // REMOVE TESTING VALUES BEFORE SUBMITTING
 const reserved = [];
 
 app.listen(HTTP_PORT, function() {
@@ -43,7 +43,7 @@ app.get("/catalogue/:name/json", async(req, res) => {
     const books = JSON.parse((await axios.get("http://localhost:3000/catalogue/json", { headers: { "content-type": "application/json" }}))?.data)?.books;
     if (!books?.length)
         return res.status(400).send();
-    const book = books.find(e => e.name == decodeURIComponent(req.params.name));
+    const book = books.find(e => e.name.replace(/ +/g, "_").toLowerCase() == decodeURIComponent(req.params.name).toLowerCase());
     if (!book)
         return res.status(404).send();
     res.status(200).json({ book });
