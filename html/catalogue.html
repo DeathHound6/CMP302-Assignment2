@@ -53,14 +53,7 @@
                     if (ev.keyCode == 13) {
                         //ev.preventDefault();
                         $("#search-button").click();
-                        // $("#books-list").children(`.book`).each((index, element) => {
-                        //     if (!element.id.toLowerCase().replace("book-", "").includes(input))
-                        //         $(element).hide();
-                        // });
                     }
-                });
-                $(".book").click(function() {
-                    window.location.assign(`/catalogue/${$(this)[0].id.replace("book-", "")}`);
                 });
                 $.ajax({
                     url: "http://localhost:3000/catalogue/json",
@@ -68,7 +61,7 @@
                     headers: {
                         "content-type": "application/json"
                     },
-                    success: function(data, status, req) {
+                    success: function(data) {
                         for (const book of data.books) {
                             $("#books-list").prepend(
                                 `<div class="book" id="book-${book.name.replace(/ +/g, "_")}">` +
@@ -93,6 +86,9 @@
                         }
                         $("#search").autocomplete({
                             source: data.books.map(e => e.name)
+                        });
+                        $(".book").click(function() {
+                            window.location.assign(`/catalogue/${$(this)[0].id.replace("book-", "")}`);
                         });
                         $("#loading").hide();
                     }
