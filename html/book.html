@@ -1,23 +1,101 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Book</title>
+        <title>Book Not Found</title>
+        <link href="/public/css/globals.css" rel="stylesheet">
+        <link href="/public/css/jquery-ui.min.css" rel="stylesheet">
         <script src="/public/js/jquery.js"></script>
-
+        <script src="/public/js/jquery-ui.min.js"></script>
+        <script src="https://kit.fontawesome.com/a6ac61292a.js" crossorigin="anonymous"></script>
         <script defer>
             $(document).ready(function() {
-                const socket = io(":3001", {
-                    transports: ["websocket"],
-                    path: "/"
+                $.ajax({
+                    url: `http://localhost:3000${window.location.pathname}/json`,
+                    method: "GET",
+                    headers: {
+                        "content-type": "application/json"
+                    },
+                    success: function(data) {
+                        $(document)[0].title = data.book.name;
+                        $("#book").append(
+                            `<h2 style='text-decoration:underline;'>${data.book.name}</h2>` +
+                            `<h4>By <i>${data.book.author}</i></h4>` +
+                            "<div style='display:inline-flex;width:65%;'>" +
+                                "<div style='margin-right:2%;'>" +
+                                    `<img src='${data.book.image}'>` +
+                                "</div>" +
+                                "<div>" +
+                                    `<p style='font-size:large;margin-top:0;'>${data.book.description}</p>` +
+                                    `<p style='font-size:x-large;text-decoration:underline;margin-top:0;'><b>£${Number(data.book.cost).toFixed(2)}</b></p>` +
+                                "</div>" +
+                            "</div>"
+                        );
+                        $("main").append("<br/><br/><br/><br/><br/><br/><br/><br/><br/>");
+                    },
+                    error: function(req) {
+                        if (req.status == 404) {
+                            const bookName = window.location.pathname.split("/")[2].replace(/_/g, " ");
+                            $("#book").append(
+                                "<h1 style='text-decoration:underline;'>No Book Found</h1>" +
+                                "<br/>" +
+                                `<p style='font-size:xx-large;'>No book with the name <b style='text-decoration:underline;'>${bookName}</b> was found.</p>` +
+                                "<br/>" +
+                                "<p style='font-size:xx-large;'>You may find available books in the <a href='/catalogue'>catalogue</a></p>"
+                            );
+                            $("main").append("<br/><br/><br/><br/><br/><br/><br/>");
+                        }
+                    }
                 });
-                socket.on("get-book", async(book) => {
-                    
-                });
-                socket.emit("request-book");
             });
         </script>
     </head>
     <body>
+        <div id="nav-bar-container">
+            <div id="nav-bar" role="navigation">
+                <div title="Homepage" class="nav-bar-button-container">
+                    <button class="nav-bar-button">
+                        <a href="http://localhost:3000"><i class="fa-solid fa-house"></i></a>
+                    </button>
+                    <p>Homepage</p>
+                </div>
+                <div title="Catalogue" class="nav-bar-button-container">
+                    <button class="nav-bar-button">
+                        <a href="http://localhost:3000/catalogue"><i class="fa-solid fa-book-open"></i></a>
+                    </button>
+                    <p>Catalogue</p>
+                </div>
+                <div style="width:100%;">
+                    <h3 style="font-size:x-large;margin-top:1%;">Library</h3>
+                </div>
+                <div title="Cart" class="nav-bar-button-container">
+                    <!--<button id="theme-switch" class="nav-bar-button">
+                        <i class="fa-solid fa-sun theme-switch" style="color:orange;"></i>
+                    </button>-->
+                    <button class="nav-bar-button">
+                        <a href="http://localhost:3000/cart"><i class="fa-solid fa-cart-shopping cart-icon"></i></a>
+                    </button>
+                    <p>Cart</p>
+                </div>
+                <div title="Reserved Books" class="nav-bar-button-container">
+                    <button class="nav-bar-button">
+                        <a href="http://localhost:3000/reserved"><i class="fa-solid fa-bookmark"></i></a>
+                    </button>
+                    <p>Reserved Books</p>
+                </div>
+            </div>
+            <br/><br/>
+        </div>
 
+        <main>
+            <br/><br/>
+            <div>
+                <br/><br/>
+                <div id="book">
+                    
+                </div>
+                <br/><br/>
+            </div>
+            <br/><br/>
+        </main>
     </body>
 </html>
