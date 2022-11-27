@@ -26,11 +26,61 @@
                                 "</div>" +
                                 "<div>" +
                                     `<p style='font-size:large;margin-top:0;'>${data.book.description}</p>` +
-                                    `<p style='font-size:x-large;text-decoration:underline;margin-top:0;'><b>£${Number(data.book.cost).toFixed(2)}</b></p>` +
                                 "</div>" +
-                            "</div>"
+                            "</div>" +
+                            `<p style='font-size:x-large;text-decoration:underline;margin-top:0;'><b>£${Number(data.book.cost).toFixed(2)}</b></p>` +
+                            "<br/>" +
+                            "<div id='add-to-cart' role='button'>Add to Cart</div>"
                         );
-                        $("main").append("<br/><br/><br/><br/><br/><br/><br/><br/><br/>");
+                        $("#add-to-cart").click(function() {
+                            $.ajax({
+                                url: "http://localhost:3000/cart",
+                                method: "POST",
+                                headers: { 
+                                    "content-type": "application/json"
+                                },
+                                data: JSON.stringify({ name: data.book.name.replace(/ +/g, "_") }),
+                                success: function() {
+                                    $("#confirm-box")[0].title = "Added";
+                                    $("#dialog-text").text("The item has been added to the cart");
+                                    $("#confirm-box").dialog({
+                                        height: "auto",
+                                        width: 400,
+                                        dialogClass: "no-close",
+                                        closeOnEscape: true,
+                                        draggable: false,
+                                        resizable: false,
+                                        modal: true,
+                                        buttons: {
+                                            Ok: function() {
+                                                $(this).dialog("close");
+                                            }
+                                        }
+                                    });
+                                },
+                                error: function(req) {
+                                    if (req.status == 400) {
+                                        $("#confirm-box")[0].title = "Error";
+                                        $("#dialog-text").text("The item is already in the cart");
+                                        $("#confirm-box").dialog({
+                                            height: "auto",
+                                            width: 400,
+                                            dialogClass: "no-close",
+                                            closeOnEscape: true,
+                                            draggable: false,
+                                            resizable: false,
+                                            modal: true,
+                                            buttons: {
+                                                Ok: function() {
+                                                    $(this).dialog("close");
+                                                }
+                                            }
+                                        });
+                                    }
+                                }
+                            });
+                        }).button();
+                        $("main").append("<br/><br/><br/><br/>");
                     },
                     error: function(req) {
                         if (req.status == 404) {
@@ -92,6 +142,9 @@
                 <br/><br/>
                 <div id="book">
                     
+                </div>
+                <div style="text-align:center;" id="confirm-box" title="">
+                    <p id="dialog-text"></p>
                 </div>
                 <br/><br/>
             </div>

@@ -60,6 +60,8 @@ app.post("/cart", async(req, res) => {
     const book = JSON.parse((await axios.get(`http://localhost:3000/catalogue/${bookName}/json`, { headers: { "content-type": "application/json" }}))?.data)?.book;
     if (!book)
         return res.status(404).send();
+    if (cart.includes(book.name))
+        return res.status(400).send();
     cart.push(book.name);
     res.status(200).send();
 });
