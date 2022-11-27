@@ -3,6 +3,7 @@
     <head>
         <title>Cart</title>
         <link href="/public/css/globals.css" rel="stylesheet">
+        <link href="/public/css/jquery-ui.min.css" rel="stylesheet">
         <style>
             #loading {
                 text-align: center;
@@ -31,11 +32,14 @@
             }
         </style>
         <script src="/public/js/jquery.js"></script>
+        <script src="/public/js/jquery-ui.min.js"></script>
+        <script src="https://kit.fontawesome.com/a6ac61292a.js" crossorigin="anonymous"></script>
         <script defer>
             $(document).ready(function() {
+                $("#checkout").button();
                 // load the cart contents as soon as the page loads
                 $.ajax({
-                    url: "http://localhost:3000/cart",
+                    url: "http://localhost:3000/cart/json",
                     dataType: "json",
                     method: "GET",
                     headers: {
@@ -46,9 +50,9 @@
                     },
                     success: function(cart, status, req) {
                         if (cart.cart.length > 0) {
-                            for (const bookName of cart.cart.reverse()) {
+                            for (const bookName of cart.cart) {
                                 $.ajax({
-                                    url: `http://localhost:3000/catalogue/${bookName}`,
+                                    url: `http://localhost:3000/catalogue/${bookName.replace(/ +/g, "_")}/json`,
                                     dataType: "json",
                                     method: "GET",
                                     headers: {
@@ -68,10 +72,11 @@
                                             $("#loading").hide();
                                         // create a new div for this book
                                         $("#container").prepend(
-                                            `<div class='book book-${book.book.name}'>` +
+                                            `<div class='book book-${book.book.name.replace(/ +/g, "_")}'>` +
                                                 "<div class='book-info'>" +
-                                                    `<p>${book.book.name}</p>` +
-                                                    `<img src='${book.book.image}' alt='${book.book.name}'>` +
+                                                    `<p style='text-decoration:underline;font-size:larger;'><b>${book.book.name}</b></p>` +
+                                                    `<img src='${book.book.image}' alt='${book.book.name}' style='width:25%;'>` +
+                                                    `<p>£${Number(book.book.cost).toFixed(2)}</p>` +
                                                 "</div>" +
                                                 "<a class='remove-book' href='javascript:void(0);'>Remove from Cart</a>" +
                                                 "<br /> <br />" +
@@ -79,32 +84,79 @@
                                             "<br />"
                                         );
 
-                                        $(`.book-${book.book.name} .book-info`).click(function() {
-                                            window.location.assign(`/catalogue/${book.book.name}`);
+                                        $(`.book-${book.book.name.replace(/ +/g, "_")} .book-info`).click(function() {
+                                            window.location.assign(`/catalogue/${book.book.name.replace(/ +/g, "_")}`);
                                         });
 
-                                        $(`.book-${book.book.name} a`).click(function(ev) {
+                                        $(`.book-${book.book.name.replace(/ +/g, "_")} a.remove-book`).click(function(ev) {
                                             ev.preventDefault();
                                             // confirm with user in case of accidental click
-                                            if (confirm(`Are you sure you want to remove ${book.book.name} from the cart?`))
-                                                $.ajax({
-                                                    url: "http://localhost:3000/cart",
-                                                    headers: {
-                                                        "content-type": "application/json"
+                                            $("#confirm-box")[0].title = "Remove from cart?";
+                                            $("#dialog-text").text(`Are you sure you want to remove ${book.book.name} from the cart?`);
+                                            $("#confirm-box").dialog({
+                                                modal: true,
+                                                resizable: false,
+                                                dialogClass: "no-close",
+                                                closeOnEscape: true,
+                                                draggable: false,
+                                                height: "auto",
+                                                width: 400,
+                                                buttons: {
+                                                    Yes: function() {
+                                                        $.ajax({
+                                                            url: "http://localhost:3000/cart",
+                                                            headers: {
+                                                                "content-type": "application/json"
+                                                            },
+                                                            data: JSON.stringify({
+                                                                name: book.book.name
+                                                            }),
+                                                            method: "DELETE",
+                                                            error: function(req, status, err) {
+                                                                console.error(err);
+                                                                $("#confirm-box")[0].title = "Error";
+                                                                $("#dialog-text").text("There was an error removing this item from the cart");
+                                                                $("#confirm-box").dialog({
+                                                                    height: "auto",
+                                                                    width: 400,
+                                                                    dialogClass: "no-class",
+                                                                    closeOnEscape: true,
+                                                                    draggable: false,
+                                                                    resizable: false,
+                                                                    modal: true,
+                                                                    buttons: {
+                                                                        Ok: function() {
+                                                                            $(this).dialog("close");
+                                                                        }
+                                                                    }
+                                                                });
+                                                            },
+                                                            success: function() {
+                                                                $("#confirm-box")[0].title = "Removed";
+                                                                $("#dialog-text").text("The item has been removed from the cart");
+                                                                $("#confirm-box").dialog({
+                                                                    height: "auto",
+                                                                    width: 400,
+                                                                    dialogClass: "no-class",
+                                                                    closeOnEscape: true,
+                                                                    draggable: false,
+                                                                    resizable: false,
+                                                                    modal: true,
+                                                                    buttons: {
+                                                                        Ok: function() {
+                                                                            $(this).dialog("close");
+                                                                            window.location.reload();
+                                                                        }
+                                                                    }
+                                                                });
+                                                            }
+                                                        });
                                                     },
-                                                    data: JSON.stringify({
-                                                        name: book.book.name
-                                                    }),
-                                                    method: "DELETE",
-                                                    error: function(req, status, err) {
-                                                        alert("There was an error removing this item from the cart");
-                                                        console.error(err);
-                                                    },
-                                                    success: function() {
-                                                        alert("The item has been removed from the cart");
-                                                        window.location.reload();
+                                                    No: function() {
+                                                        $(this).dialog("close");
                                                     }
-                                                });
+                                                }
+                                            });
                                         });
                                     }
                                 });
@@ -114,21 +166,66 @@
                         $("#loading").html(
                             "There are no books in your cart.<br />Please add some from our <a href='/catalogue'>catalogue</a>"
                         );
-                        $("#checkout").attr("disabled", true);
+                        $("#checkout").attr("href", "/cart");
                     }
                 });
             });
         </script>
     </head>
     <body>
-        <!-- NAV BAR HEADER -->
-
-        <div id="container">
-            <h2 id="loading">Loading...</h2>
-            <br/>
-            <a href="/checkout" class="button" style="display:inline-block;">Checkout</a>
+        <div id="nav-bar-container">
+            <div id="nav-bar" role="navigation">
+                <div title="Homepage" class="nav-bar-button-container">
+                    <button class="nav-bar-button">
+                        <a href="http://localhost:3000"><i class="fa-solid fa-house"></i></a>
+                    </button>
+                    <p>Homepage</p>
+                </div>
+                <div title="Catalogue" class="nav-bar-button-container">
+                    <button class="nav-bar-button">
+                        <a href="http://localhost:3000/catalogue"><i class="fa-solid fa-book-open"></i></a>
+                    </button>
+                    <p>Catalogue</p>
+                </div>
+                <div style="width:100%;">
+                    <h3 style="font-size:x-large;margin-top:1%;">Library</h3>
+                </div>
+                <div title="Cart" class="nav-bar-button-container">
+                    <!--<button id="theme-switch" class="nav-bar-button">
+                        <i class="fa-solid fa-sun theme-switch" style="color:orange;"></i>
+                    </button>-->
+                    <button class="nav-bar-button">
+                        <a href="http://localhost:3000/cart"><i class="fa-solid fa-cart-shopping cart-icon"></i></a>
+                    </button>
+                    <p>Cart</p>
+                </div>
+                <div title="Reserved Books" class="nav-bar-button-container">
+                    <button class="nav-bar-button">
+                        <a href="http://localhost:3000/reserved"><i class="fa-solid fa-bookmark"></i></a>
+                    </button>
+                    <p>Reserved Books</p>
+                </div>
+            </div>
+            <br/><br/>
         </div>
 
-        <!-- FOOTER -->
+        <main>
+            <br/><br/>
+            <div>
+                <br/><br/>
+                <div>
+                    <h2 style="text-decoration:underline;">Cart</h2>
+                    <h2 id="loading">Loading Cart Items</h2>
+                    <div id="container">
+                        <a id="checkout" href="/checkout" style="display:inline-block;">Checkout</a>
+                        <div style="text-align:center;" id="confirm-box" title="">
+                            <p id="dialog-text"></p>
+                        </div>
+                    </div>
+                </div>
+                <br/><br/>
+            </div>
+            <br/><br/>
+        </main>
     </body>
 </html>

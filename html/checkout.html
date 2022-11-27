@@ -62,7 +62,7 @@
                     success: function(data) {
                         for (const bookName of data.cart) {
                             $.ajax({
-                                url: `http://localhost:3000/catalogue/${bookName}/json`,
+                                url: `http://localhost:3000/catalogue/${bookName.replace(/ +/g, "_")}/json`,
                                 method: "GET",
                                 headers: {
                                     "content-type": "application/json"
