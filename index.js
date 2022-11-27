@@ -6,6 +6,7 @@
  * @property {Number} cost
  * @property {String} url
  * @property {String} image
+ * @property {String} description
  */
 
 // module imports
@@ -36,9 +37,6 @@ app.get("/catalogue/json", async(req, res) => {
     const books = JSON.parse(readFileSync(`${__dirname}/books.json`).toString());
     res.status(200).json({ books });
 });
-app.get("/catalogue/:name", async(req, res) => {
-    res.status(200).sendFile(`${__dirname}/html/book.html`);
-});
 app.get("/catalogue/:name/json", async(req, res) => {
     const books = JSON.parse((await axios.get("http://localhost:3000/catalogue/json", { headers: { "content-type": "application/json" }}))?.data)?.books;
     if (!books?.length)
@@ -47,6 +45,9 @@ app.get("/catalogue/:name/json", async(req, res) => {
     if (!book)
         return res.status(404).send();
     res.status(200).json({ book });
+});
+app.get("/catalogue/:name", async(req, res) => {
+    res.status(200).sendFile(`${__dirname}/html/book.html`);
 });
 app.get("/cart", async(req, res) => {
     res.status(200).sendFile(`${__dirname}/html/cart.html`);
