@@ -17,7 +17,7 @@ const { readFileSync } = require("fs");
 // create global variables
 const HTTP_PORT = 3000;
 const app = express();
-const cart = ["JQuery UI", "Regex Quick Syntax Reference", "Beginning HTML and CSS"]; // REMOVE TESTING VALUES BEFORE SUBMITTING
+const cart = [];
 const reserved = [];
 
 app.listen(HTTP_PORT, function() {
