@@ -7,6 +7,11 @@
         <script src="/public/js/jquery.js"></script>
         <script src="/public/js/jquery-ui.min.js"></script>
         <script src="https://kit.fontawesome.com/a6ac61292a.js" crossorigin="anonymous"></script>
+        <style>
+            .fa-chevron-up, .fa-chevron-down {
+                cursor: pointer;
+            }
+        </style>
         <script defer>
             $(document).ready(function() {
                 $.ajax({
@@ -16,6 +21,11 @@
                         "content-type": "application/json"
                     },
                     success: function(data) {
+                        function chevronClick() {
+                            if ($(this).hasClass("fa-chevron-down"))
+                                return $("#book-description").text(" " + data.book.description).prepend("<i class='fa-solid fa-chevron-up'></i>");
+                            $("#book-description").text(" " + data.book.description.split(" ").slice(0, 50).join(" ") + "...").prepend("<i class='fa-solid fa-chevron-down'></i>");
+                        }
                         $(document)[0].title = data.book.name;
                         $("#book").append(
                             `<h2 style='text-decoration:underline;'>${data.book.name}</h2>` +
@@ -25,13 +35,19 @@
                                     `<img src='${data.book.image}'>` +
                                 "</div>" +
                                 "<div>" +
-                                    `<p style='font-size:large;margin-top:0;'>${data.book.description}</p>` +
+                                    `<p style='font-size:large;margin-top:0;' id='book-description'><i class="fa-solid fa-chevron-down"></i> ${data.book.description.split(" ").slice(0, 50).join(" ")}...</p>` +
                                 "</div>" +
                             "</div>" +
                             `<p style='font-size:x-large;text-decoration:underline;margin-top:0;'><b>£${Number(data.book.cost).toFixed(2)}</b></p>` +
                             "<br/>" +
                             "<div id='add-to-cart' role='button'>Add to Cart</div>"
                         );
+                        // set another event to allow changing text again
+                        $(".fa-chevron-up, .fa-chevron-down").click(chevronClick);
+                        // 'DOMSubtreeModified' event detects when HTML changed
+                        $("#book-description").on("DOMSubtreeModified", function() {
+                            $(".fa-chevron-up, .fa-chevron-down").click(chevronClick);
+                        });
                         $("#add-to-cart").click(function() {
                             $.ajax({
                                 url: "http://localhost:3000/cart",

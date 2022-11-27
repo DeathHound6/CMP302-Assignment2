@@ -32,9 +32,6 @@
             .book-cost {
                 font-size: x-large;
             }
-            .br-hidden {
-                display: none;
-            }
         </style>
         <script src="/public/js/jquery.js"></script>
         <script src="/public/js/jquery-ui.min.js"></script>
@@ -84,6 +81,8 @@
                                                 `<span class='book-title'>${book.name}</span>` +
                                                 "<br/>" +
                                                 `<span class="book-author">${book.author}</span>` +
+                                                "<br/><br/>" +
+                                                `<span>${book.description.split(" ").slice(0, 20).join(" ")}...</span>` +
                                             "</p> " +
                                             `<p class="book-cost">£${Number(book.cost).toFixed(2)}</p>` +
                                         "</div>" +

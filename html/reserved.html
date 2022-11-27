@@ -1,7 +1,145 @@
 <!DOCTYPE html>
 <html>
-    <head></head>
+    <head>
+        <title>Reserved Books</title>
+        <link href="/public/css/globals.css" rel="stylesheet">
+        <link href="/public/css/jquery-ui.min.css" rel="stylesheet">
+        <script src="/public/js/jquery.js"></script>
+        <script src="/public/js/jquery-ui.min.js"></script>
+        <script src="https://kit.fontawesome.com/a6ac61292a.js" crossorigin="anonymous"></script>
+        <style>
+            #reserved-list {
+                font-size: x-large;
+            }
+            .book > div {
+                margin-right: 5%;
+                margin-left: 5%;
+                border-radius: 10px;
+                border: 1px solid black;
+                cursor: pointer;
+                display: inline-flex;
+                width: 50%;
+            }
+            .book > div > div {
+                width: 50%;
+            }
+            .book-image {
+                width: 80%;
+                padding-left: 2%;
+                padding-right: 2%;
+            }
+            .book-title {
+                font-size: xx-large;
+                text-decoration: underline;
+            }
+            .book-author {
+                font-size: larger;
+            }
+        </style>
+        <script defer>
+            $(document).ready(function() {
+                $.ajax({
+                    url: "http://localhost:3000/reserved/json",
+                    method: "GET",
+                    headers: {
+                        "content-type": "application/json"
+                    },
+                    success: function(data) {
+                        if (data.reserved.length > 0) {
+                            for (const bookName of data.reserved) {
+                                $.ajax({
+                                    url: `http://localhost:3000/catalogue/${bookName.replace(/ +/g, "_")}/json`,
+                                    method: "GET",
+                                    headers: {
+                                        "content-type": "application/json"
+                                    },
+                                    success: function(book) {
+                                        $("#reserved-list").append(
+                                            `<div class='book' id='${book.book.name.replace(/ +/g, "_")}' onclick='window.location.assign("${book.book.url}")'>` +
+                                                "<div>" +
+                                                    "<br/>" +
+                                                    "<div>" +
+                                                        "<br/>" +
+                                                        `<img src='${book.book.image}' class='book-image'>` +
+                                                        "<br/>" +
+                                                    "</div>" +
+                                                    "<div>" +
+                                                        "<p>" +
+                                                            `<span class='book-title'>${book.book.name}</span>` +
+                                                            "<br/>" +
+                                                            `<span class="book-author">${book.book.author}</span>` +
+                                                            "<br/><br/>" +
+                                                            `<span>${book.book.description.split(" ").slice(0, 20).join(" ")}...</span>` +
+                                                        "</p> " +
+                                                    "</div>" +
+                                                    "<br/>" +
+                                                "</div>" +
+                                                "<br/><br/>" +
+                                            "</div>"
+                                        );
+                                    }
+                                });
+                            }
+                            return;
+                        }
+                        $("#reserved-list").append(
+                            "<p>You have not reserved any books</p>" +
+                            "<p>You can reserve books by checking out your <a href='/cart'>cart</a></p>"
+                        );
+                        $("main").append("<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>");
+                    }
+                });
+            });
+        </script>
+    </head>
     <body>
-        
+        <div id="nav-bar-container">
+            <div id="nav-bar" role="navigation">
+                <div title="Homepage" class="nav-bar-button-container">
+                    <button class="nav-bar-button">
+                        <a href="http://localhost:3000"><i class="fa-solid fa-house"></i></a>
+                    </button>
+                    <p>Homepage</p>
+                </div>
+                <div title="Catalogue" class="nav-bar-button-container">
+                    <button class="nav-bar-button">
+                        <a href="http://localhost:3000/catalogue"><i class="fa-solid fa-book-open"></i></a>
+                    </button>
+                    <p>Catalogue</p>
+                </div>
+                <div style="width:100%;">
+                    <h3 style="font-size:x-large;margin-top:1%;">Library</h3>
+                </div>
+                <div title="Cart" class="nav-bar-button-container">
+                    <!--<button id="theme-switch" class="nav-bar-button">
+                        <i class="fa-solid fa-sun theme-switch" style="color:orange;"></i>
+                    </button>-->
+                    <button class="nav-bar-button">
+                        <a href="http://localhost:3000/cart"><i class="fa-solid fa-cart-shopping cart-icon"></i></a>
+                    </button>
+                    <p>Cart</p>
+                </div>
+                <div title="Reserved Books" class="nav-bar-button-container">
+                    <button class="nav-bar-button">
+                        <a href="http://localhost:3000/reserved"><i class="fa-solid fa-bookmark"></i></a>
+                    </button>
+                    <p>Reserved Books</p>
+                </div>
+            </div>
+            <br/><br/>
+        </div>
+
+        <main>
+            <br/><br/>
+            <div>
+                <br/><br/>
+                <h2 style="text-decoration:underline;">Reserved Books</h2>
+                <div id="reserved-list">
+
+                </div>
+                <br/><br/>
+            </div>
+            <br/><br/>
+        </main>
     </body>
 </html>
