@@ -5,7 +5,7 @@
         <link href="/public/css/globals.css" rel="stylesheet">
         <link href="/public/css/jquery-ui.min.css" rel="stylesheet">
         <style>
-            .book {
+            .book > div {
                 margin-right: 5%;
                 margin-left: 5%;
                 border-radius: 10px;
@@ -14,7 +14,7 @@
                 display: inline-flex;
                 width: 50%;
             }
-            .book > div {
+            .book > div > div {
                 width: 50%;
             }
             .book-image {
@@ -32,6 +32,9 @@
             .book-cost {
                 font-size: x-large;
             }
+            .br-hidden {
+                display: none;
+            }
         </style>
         <script src="/public/js/jquery.js"></script>
         <script src="/public/js/jquery-ui.min.js"></script>
@@ -42,11 +45,14 @@
                     const input = $("#search").val();
                     if (!input)
                         return $(".book").show();
-                    $("#books-list").children(`.book`).each((index, element) => {
-                        if (!element.id.toLowerCase().replace("book-", "").replace(/_+/g, " ").includes(input.toLowerCase()))
-                            return $(element).hide();
+                    for (const [index, element] of Object.entries($(".book").toArray())) {
+                        $(`#br-${index}`).show();
                         $(element).show();
-                    });
+                        if (!element.id.toLowerCase().replace("book-", "").replace(/_+/g, " ").includes(input.toLowerCase())) {
+                            $(`#br-${index}`).hide();
+                            $(element).hide();
+                        }
+                    }
                 });
                 $("#search").keypress(function(ev) {
                     // key code 13 is enter
@@ -62,26 +68,29 @@
                         "content-type": "application/json"
                     },
                     success: function(data) {
-                        for (const book of data.books) {
+                        for (let index = data.books.length-1; index != -1; index--) {
+                            const book = data.books[index];
                             $("#books-list").prepend(
                                 `<div class="book" id="book-${book.name.replace(/ +/g, "_")}">` +
-                                    "<br/>" +
                                     "<div>" +
                                         "<br/>" +
-                                        `<img src='${book.image}' class='book-image'>` +
-                                        "<br/>" +
-                                    "</div>" +
-                                    "<div>" +
-                                        "<p>" +
-                                            `<span class='book-title'>${book.name}</span>` +
+                                        "<div>" +
                                             "<br/>" +
-                                            `<span class="book-author">${book.author}</span>` +
-                                        "</p> " +
-                                        `<p class="book-cost">£${Number(book.cost).toFixed(2)}</p>` +
+                                            `<img src='${book.image}' class='book-image'>` +
+                                            "<br/>" +
+                                        "</div>" +
+                                        "<div>" +
+                                            "<p>" +
+                                                `<span class='book-title'>${book.name}</span>` +
+                                                "<br/>" +
+                                                `<span class="book-author">${book.author}</span>` +
+                                            "</p> " +
+                                            `<p class="book-cost">£${Number(book.cost).toFixed(2)}</p>` +
+                                        "</div>" +
+                                        "<br/>" +
                                     "</div>" +
-                                    "<br/>" +
-                                "</div>" +
-                                "<br/><br/>"
+                                    "<br/><br/>" +
+                                "</div>"
                             );
                         }
                         $("#search").autocomplete({
@@ -165,8 +174,7 @@
                 </div>
                 <br/>
             </div>
-            <br/>
-            <br/>
+            <br/><br/><br/><br/><br/><br/><br/><br/>
         </main>
     </body>
 </html>
