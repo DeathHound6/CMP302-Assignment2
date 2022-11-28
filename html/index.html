@@ -9,6 +9,11 @@
         <script src="https://kit.fontawesome.com/a6ac61292a.js" crossorigin="anonymous"></script>
         <script defer>
             $(document).ready(function() {
+                $("#text").hide();
+                $("#toggle-text").click(function() {
+                    $(this).toggleClass("fa-chevron-up").toggleClass("fa-chevron-down");
+                    $("#text").toggle();
+                });
                 // $('#theme-switch').click(function(){
                 //     $(document.body).toggleClass("dark");
                 //     $(".theme-switch").toggleClass("fa-sun").toggleClass("fa-moon");
@@ -24,6 +29,14 @@
                 // );
             });
         </script>
+        <style>
+            main > div > div > p {
+                font-size: x-large;
+            }
+            #toggle-text {
+                cursor: pointer;
+            }
+        </style>
     </head>
     <body>
         <div id="nav-bar-container">
@@ -66,10 +79,15 @@
             <br/><br/>
             <div>
                 <br/><br/>
-                <!-- MAIN CONTENT -->
+                <h2 style="text-decoration:underline;">About The Site</h2>
+                <div style="margin-left:15%;margin-right:15%;">
+                    <p><i class='fa-solid fa-chevron-down' id="toggle-text"></i> Welcome to our library web system. This site will allow you to search for various books, open them as an ebook or created a plan to borrow a book for x amount of days.
+                        <span id="text"><br/><br/>All physical books that are borrowed from this library need to be returned within the plan that has been set by the user and agreed by the service. All physical books need to be returned in the same quality with which they were borrwed. Books that have been damaged when in the holders possession will need to be substituted with cash payment of the books value.</span>
+                    </p>
+                </div>
                 <br/><br/>
             </div>
-            <br/><br/>
+            <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
         </main>
     </body>
 </html>
