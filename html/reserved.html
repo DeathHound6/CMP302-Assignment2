@@ -56,8 +56,8 @@
                                     },
                                     success: function(book) {
                                         $("#reserved-list").append(
-                                            `<div class='book' id='${book.book.name.replace(/ +/g, "_")}' onclick='window.location.assign("${book.book.url}")'>` +
-                                                "<div>" +
+                                            `<div class='book' id='${book.book.name.replace(/ +/g, "_")}'>` +
+                                                `<div title='' onclick='window.open("${book.book.url}", "_blank").focus();'>` +
                                                     "<br/>" +
                                                     "<div>" +
                                                         "<br/>" +
@@ -78,6 +78,14 @@
                                                 "<br/><br/>" +
                                             "</div>"
                                         );
+                                        $(`#${book.book.name.replace(/ +/g, "_")}>div`)[0].title = "Click here to read me";
+                                        $(`#${book.book.name.replace(/ +/g, "_")}>div[title]`).tooltip({
+                                            position: {
+                                                my: "left top",
+                                                at: "right+5 top-5",
+                                                collision: "none"
+                                            }
+                                        });
                                     }
                                 });
                             }
@@ -140,7 +148,7 @@
                 </div>
                 <br/><br/>
             </div>
-            <br/><br/>
+            <br/><br/><br/><br/>
         </main>
     </body>
 </html>
