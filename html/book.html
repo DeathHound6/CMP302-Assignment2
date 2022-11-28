@@ -24,11 +24,11 @@
                     success: function(data) {
                         const descripArray = data.book.description.split(" ");
                         const descripOne = descripArray.slice(0, 50).join(" ");
-                        const descripTwo = descripArray.slice(50, descripArray.length).join(" ");
+                        const descripTwo = descripArray.slice(49, descripArray.length).join(" ");
                         function chevronClick() {
                             if ($(this).hasClass("fa-chevron-down"))
                                 return $("#book-description").text(` ${data.book.description}`).prepend("<i class='fa-solid fa-chevron-up'></i>");
-                            $("#book-description").text(` ${descrip}${descrip == data.book.description ? "" : "..."}`).prepend("<i class='fa-solid fa-chevron-down'></i>");
+                            $("#book-description").text(` ${descripOne}${`${descripOne} ${descripTwo}` == data.book.description ? "" : "..."}`).prepend("<i class='fa-solid fa-chevron-down'></i>");
                         }
                         $(document)[0].title = data.book.name;
                         $("#book").append(
@@ -39,7 +39,7 @@
                                     `<img src='${data.book.image}'>` +
                                 "</div>" +
                                 "<div>" +
-                                    `<p style='font-size:large;margin-top:0;' id='book-description'>${descrip == data.book.description ? "" : "<i class='fa-solid fa-chevron-down'></i> "}${descrip}${descrip == data.book.description ? "" : "..."}</p>` +
+                                    `<p style='font-size:large;margin-top:0;' id='book-description'><i class='fa-solid fa-chevron-down'></i> ${descripOne}${`${descripOne} ${descripTwo}` == data.book.description ? "" : "..."}</p>` +
                                 "</div>" +
                             "</div>" +
                             `<p style='font-size:x-large;text-decoration:underline;margin-top:0;'><b>£${Number(data.book.cost).toFixed(2)}</b></p>` +
